@@ -18,59 +18,35 @@ private: /* FIELDS */
     /* this number value */
         num_t value_ = 0;
 
-    /* licence counters init */
-        #define DEF_BIN_OP( OP_, NAME_, INIT_VAL_ ) \
-        int count##NAME_ = INIT_VAL_;
-        #define DEF_LOG_OP( OP_, NAME_, INIT_VAL_ ) \
-        int count##NAME_ = INIT_VAL_;
-        #define DEF_UNR_OP( OP_, NAME_, INIT_VAL_ ) \
-        int count##NAME_ = INIT_VAL_;
-
-        int countAssign = 0x2;
-
-        #include "DSL.h"
-
-        #undef DEF_BIN_OP
-        #undef DEF_LOG_OP
-        #undef DEF_UNR_OP
-
 public:  /* METHODS */
 
-    /* value c-tor */
-        Number( const num_t value ) : value_(value) {};
+    /* Number c-tor with value */
+        Number( num_t value );
+    /* Copy c-tor */
+        Number( const Number& toCopy );
+    /* D-tor with info out */
+       ~Number();
 
-    /* operators defines */
-        #define DEF_BIN_OP( OP_, NAME_, INIT_VAL_ )     \
-        const Number operator##OP_(const Number& rv)    \
-        { return value_ OP_ rv.value_; }
+/* operators decls */
+    /* cast operator - only for bool */
+        operator bool();
 
-        #define DEF_LOG_OP( OP_, NAME_, INIT_VAL_ )     \
-        Number operator##OP_(const int rv)          \
-        { return value_ OP_ rv; }
+    /* ariph operators */
+        Number operator +( const Number& rv );
+        Number operator -( const Number& rv );
+        Number operator *( const Number& rv );
+        Number operator /( const Number& rv );
 
-        //#define DEF_UNR_OP( OP_, NAME_, INIT_VAL_ )     \
-        //const Number operator##OP_() const              \
-        //{ return value_ OP_; }
-
-        #include "DSL.h"
-
-        #undef DEF_BIN_OP
-        //#undef DEF_UNR_OP
-        #undef DEF_LOG_OP
-
-    /* to get value */
-        const num_t  operator!()
-        { return value_; }
+    /* logical operators */
+        Number operator > ( const Number& rv );
+        Number operator < ( const Number& rv );
+        Number operator >=( const Number& rv );
+        Number operator <=( const Number& rv );
+        Number operator ==( const Number& rv );
+        Number operator !=( const Number& rv );
 
     /* = operator */
-        const Number operator=( const Number& rv )
-        { return value_ = rv.value_; }
-
-    /* cast operators */
-        operator bool()
-        { return (bool)value_; }
-        operator int()
-        { return value_; }
+        Number operator =( const Number& rv );
 
 };
 

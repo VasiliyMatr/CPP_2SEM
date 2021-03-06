@@ -4,11 +4,12 @@
 int main()
 {
     Number N = -55;
+    Number NMax = 100;
+    Number One = 1;
 
-    for (; N < 100.1;)
+    for (; N < NMax;)
     {
-        N = (N + 1);
-        printf ("Number is: %d", !N);
+        N = N + One;
     }
 
     return 0;
