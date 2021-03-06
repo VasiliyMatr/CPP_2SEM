@@ -30,6 +30,10 @@
 /* Hash function for byte sequences */
     hash_t hashF( const void* toHash, const size_t numOfBytes );
 
+/* funcs to get poison */
+    int getPoison( int* );
+    double getPoison( double* );
+
 /* including funcs realization */
     #include "local_utils.cpp"
 

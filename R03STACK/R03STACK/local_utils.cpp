@@ -47,3 +47,13 @@ hash_t hashF( const void* toHash, const size_t numOfBytes )
 
     return hash;
 }
+
+int getPoison( int* )
+{
+    return 0xF00DF00D;
+}
+
+double getPoison( double* )
+{
+    return NAN;
+}

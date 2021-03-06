@@ -139,6 +139,8 @@ public:
     data_t  pop ( err_t *errorPtr = nullptr );
     err_t   push( data_t new_data, err_t *errorPtr = nullptr );
 
+    /* dump func */
+    void    dump( bool needCheck );
     /* verification func */
     err_t   verify();
 

@@ -44,7 +44,10 @@
             /* Verifying all things in Stack. */                    \
             *ERR_PTR = verify ();                                   \
             if (*ERR_PTR != err_t::OK_)                             \
+            {                                                       \
+                dump (true);                                        \
                 return TO_RET_VR;                                   \
+            }                                                       \
         }                                                           \
                                                                     \
         else if (dbgMode_ != dbgMode_t::DBG_OFF_)                   \
@@ -71,10 +74,10 @@ Stack<data_t>::Stack( dbgMode_t dbgMode )/* DBG_OFF_ - default value */
     : dbgMode_ (dbgMode)
 {
 
-    // if (dbgMode_ != dbgMode_t::DBG_OFF_)
-    //     /* Poison to all data in Stack. */
-    //     for (size_t i = 0; i < STK_CAPACITY_; i++)
-    //         data_[i] = POISON_;
+    if (dbgMode_ != dbgMode_t::DBG_OFF_)
+        /* Poison to all data in Stack. */
+        for (size_t i = 0; i < STK_CAPACITY_; i++)
+            data_[i] = getPoison (data_);
 
     if (dbgMode_ == dbgMode_t::DBG_FULL_)
     {
@@ -146,11 +149,11 @@ data_t Stack<data_t>::pop( err_t *errorPtr )/*
         if (errorPtr != nullptr)
         {
             *errorPtr = err_t::STACK_EMPTY_;
-            return 0;
+            return getPoison (data_);
         }
 
         else
-            return 0;
+            return getPoison (data_);
     }
 
     /* Getting data. */
@@ -159,8 +162,8 @@ data_t Stack<data_t>::pop( err_t *errorPtr )/*
 #if PRJ_STK_DBG_ON_
 
     /* Poison to fread space. */
-    // if (dbgMode_ != dbgMode_t::DBG_OFF_)
-    //     data_[size_] = POISON_;
+    if (dbgMode_ != dbgMode_t::DBG_OFF_)
+        data_[size_] = getPoison (data_);
 
     if (dbgMode_ == dbgMode_t::DBG_FULL_)
     {
@@ -260,6 +263,44 @@ typename Stack<data_t>::err_t Stack<data_t>::hashCheck()
 #endif
 }
 
+
 /* undefs */
     #undef STK_VERIFY_
     #undef ERROR_VERIFY_
+
+template <typename data_t>
+void Stack<data_t>::dump( bool needCheck )
+{
+
+    FILE* outFile = fopen("dump.txt", "wb");
+    if (outFile == nullptr)
+        return;
+
+#if PRJ_STK_DBG_ON_
+
+    err_t error = err_t::OK_;
+
+    if (needCheck)
+        error = verify ();
+
+    fprintf (outFile, "Stack :"     "\n"
+                      "Addr  : %X"  "\n"
+                      "Error : %X"  "\n"
+                      "Hash  : %X"  "\n"
+                      "", this, error, hash_);
+
+#else
+
+    fprintf(outFile, "Stack :"     "\n"
+                     "Addr  : %X"  "\n"
+                     "", this);
+
+#endif
+
+    for (size_t dataId = 0; dataId < STK_CAPACITY_; dataId++)
+    {
+        fprintf (outFile, "       [%012X] > %08X" "\n", dataId, data_[dataId]);
+    }
+
+    fclose (outFile);
+}
