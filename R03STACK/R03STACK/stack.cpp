@@ -65,15 +65,16 @@
 
 /* *********************** */
 
-Stack::Stack( dbgMode_t dbgMode )/* DBG_OFF_ - default value */
+template <typename data_t>
+Stack<data_t>::Stack( dbgMode_t dbgMode )/* DBG_OFF_ - default value */
 #if PRJ_STK_DBG_ON_
     : dbgMode_ (dbgMode)
 {
 
-    if (dbgMode_ != dbgMode_t::DBG_OFF_)
-        /* Poison to all data in Stack. */
-        for (size_t i = 0; i < STK_CAPACITY_; i++)
-            data_[i] = POISON_;
+    // if (dbgMode_ != dbgMode_t::DBG_OFF_)
+    //     /* Poison to all data in Stack. */
+    //     for (size_t i = 0; i < STK_CAPACITY_; i++)
+    //         data_[i] = POISON_;
 
     if (dbgMode_ == dbgMode_t::DBG_FULL_)
     {
@@ -90,7 +91,8 @@ Stack::Stack( dbgMode_t dbgMode )/* DBG_OFF_ - default value */
 
 #endif
 
-Stack::err_t Stack::push( sData_t new_data, err_t *errorPtr )/*
+template <typename data_t>
+typename Stack<data_t>::err_t Stack<data_t>::push( data_t new_data, err_t *errorPtr )/*
                                                                 nullptr - default value for 2nd arg, no error
                                                                 output in this case (DBG_OFF_ should be choosed)
                                                                 error is always returned by this func
@@ -129,13 +131,14 @@ Stack::err_t Stack::push( sData_t new_data, err_t *errorPtr )/*
     return err_t::OK_;
 }
 
-Stack::sData_t Stack::pop( err_t *errorPtr )/*
+template <typename data_t>
+data_t Stack<data_t>::pop( err_t *errorPtr )/*
                                                 nullptr - default value for 1st arg, no error
                                                 output in this case (DBG_OFF_ should be choosed).
                                                 POISON_ val returned if stack is empty (in all cases).
                                             */
 {
-    STK_VERIFY_ (errorPtr, POISON_, POISON_);
+    STK_VERIFY_ (errorPtr, 0, 0);
 
     if (size_ == 0)
     {
@@ -143,21 +146,21 @@ Stack::sData_t Stack::pop( err_t *errorPtr )/*
         if (errorPtr != nullptr)
         {
             *errorPtr = err_t::STACK_EMPTY_;
-            return POISON_;
+            return 0;
         }
 
         else
-            return POISON_;
+            return 0;
     }
 
     /* Getting data. */
-    sData_t toRet = data_[--size_];
+    data_t toRet = data_[--size_];
 
 #if PRJ_STK_DBG_ON_
 
     /* Poison to fread space. */
-    if (dbgMode_ != dbgMode_t::DBG_OFF_)
-        data_[size_] = POISON_;
+    // if (dbgMode_ != dbgMode_t::DBG_OFF_)
+    //     data_[size_] = POISON_;
 
     if (dbgMode_ == dbgMode_t::DBG_FULL_)
     {
@@ -171,7 +174,8 @@ Stack::sData_t Stack::pop( err_t *errorPtr )/*
     return toRet;
 }
 
-Stack::err_t Stack::verify()
+template <typename data_t>
+AbstractStack::err_t Stack<data_t>::verify()
 {
 
 #if PRJ_STK_DBG_ON_
@@ -201,7 +205,8 @@ Stack::err_t Stack::verify()
 #endif
 }
 
-Stack::err_t Stack::canCheck()
+template <typename data_t>
+AbstractStack::err_t Stack<data_t>::canCheck()
 {
 
 #if PRJ_STK_DBG_ON_
@@ -230,7 +235,8 @@ Stack::err_t Stack::canCheck()
 #endif
 }
 
-Stack::err_t Stack::hashCheck()
+template <typename data_t>
+typename Stack<data_t>::err_t Stack<data_t>::hashCheck()
 {
 #if PRJ_STK_DBG_ON_
 

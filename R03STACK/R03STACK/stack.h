@@ -13,42 +13,38 @@
 /* capacity stuff */
     #define STK_CAPACITY_   10000
 
-class Stack
+class AbstractStack
 {
+
 /* types */
-
 public:
-
-    /* Stack data type and poison value */
-        typedef unsigned char   sData_t;
-        static const            sData_t POISON_ = 0xA0FaaA0F;
 
     /* for errors output */
 
         enum class err_t
         {
             /* no errors */
-            OK_ = 0                 ,
+            OK_ = 0,
 
-                /* canaries problems */
-                TOP_STK_CAN_DEAD_   = -0xFFFF,
-                BOT_STK_CAN_DEAD_   ,
-                TOP_DATA_CAN_DEAD_  ,
-                BOT_DATA_CAN_DEAD_  ,
+            /* canaries problems */
+            TOP_STK_CAN_DEAD_ = -0xFFFF,
+            BOT_STK_CAN_DEAD_,
+            TOP_DATA_CAN_DEAD_,
+            BOT_DATA_CAN_DEAD_,
 
             /* hash is currupted */
-            HASH_IS_BAD_            ,
+            HASH_IS_BAD_,
 
             /* size is bigger than capacity */
-            SIZE_CAP_ERR_           ,
+            SIZE_CAP_ERR_,
 
             /* error with errorPtr */
-            BAD_ERROR_P_            ,
+            BAD_ERROR_P_,
 
             /* stack is full */
-            STACK_OVERFLOW_         =  0xFFFF,
+            STACK_OVERFLOW_ = 0xFFFF,
             /* stack is empty */
-            STACK_EMPTY_            ,
+            STACK_EMPTY_,
         };
 
     /* ***************** */
@@ -58,17 +54,23 @@ public:
         enum class dbgMode_t
         {
             /* no debug */
-            DBG_OFF_  = 0x0FFF0FFF,
+            DBG_OFF_ = 0x0FFF0FFF,
             /* only canaries */
-            DBG_CAN_  = 0xC0C0C0,
+            DBG_CAN_ = 0xC0C0C0,
             /* full dbg with hashes and canaries */
             DBG_FULL_ = 0xDB6F011
         };
 
     /* ******************* */
 
-/* FIELDS */
+};
 
+template <typename data_t>
+class Stack : public AbstractStack
+{
+public:
+
+/* FIELDS */
 
 /* Define to create canaries. */
 
@@ -98,7 +100,7 @@ private:
         CAN_ (DATA_TOP_CAN_);
 
         /* data */
-        sData_t data_[STK_CAPACITY_];
+        data_t data_[STK_CAPACITY_];
 
         /* stack data bot canary */
         CAN_ (DATA_BOT_CAN_);
@@ -134,11 +136,11 @@ public:
         Should be inited with err_t::OK_; BUT, if there is a
         default value and debug mode is DBG_OFF_ - it isn't used
     */
-    sData_t         pop ( err_t *errorPtr = nullptr );
-    Stack::err_t    push( sData_t new_data, err_t *errorPtr = nullptr );
+    data_t  pop ( err_t *errorPtr = nullptr );
+    err_t   push( data_t new_data, err_t *errorPtr = nullptr );
 
     /* verification func */
-    err_t verify();
+    err_t   verify();
 
 private:
 

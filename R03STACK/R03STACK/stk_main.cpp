@@ -26,13 +26,13 @@ int main()
         const size_t cycles = 8192;
 
         /* for error out */
-        Stack::err_t    stkError = Stack::err_t::OK_;
+        auto stkError = AbstractStack::err_t::OK_;
 
         /* stacks with diff dbg modes */
-            Stack test;
-            Stack testOFF   (Stack::dbgMode_t::DBG_OFF_);
-            Stack testCAN   (Stack::dbgMode_t::DBG_CAN_);
-            Stack testFULL  (Stack::dbgMode_t::DBG_FULL_);
+            Stack<int> test;
+            Stack<int> testOFF   (AbstractStack::dbgMode_t::DBG_OFF_);
+            Stack<double> testCAN   (AbstractStack::dbgMode_t::DBG_CAN_);
+            Stack<int> testFULL  (AbstractStack::dbgMode_t::DBG_FULL_);
 
             /* hash test */
         for (int i = 0; i < cycles; i++)
